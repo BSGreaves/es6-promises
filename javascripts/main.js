@@ -1,35 +1,34 @@
 // Use AJAX | Promises to load all 3 JSON files
 // Iterate over all JSON files and match the human with their appropriate pet(s)
 // ES6-ify it all!
+	// NO MORE VAR
+	// FAT ARROW
 
 $(document).ready(function() {
 
-    var myHumans = [];
-    var myAnimals = [];
-
-    function loadJSON(filepath) {
-        return new Promise(function(resolve, reject) {
+    const myHumans = [];
+    const myAnimals = [];
+        
+    const loadJSON = (filepath) => {
+    	return new Promise((resolve, reject) => {
             $.ajax(filepath)
-                .done(function(data) {
-                    resolve(data);
-                }).fail(function(error) {
-                    reject(error);
-                });
+            .done((data) => resolve(data))
+            .fail((error) => reject(error));
         });
-    }
+    };
 
-    var outputContainer = $("#output");
+    const outputContainer = $("#output");
 
-    var writeToDOM = function(humanArray) {
-        var domString = ""
-        for (var i = 0; i < humanArray.length; i++) {
+    const writeToDOM = (humanArray) => {
+        let domString = ""
+        for (let i = 0; i < humanArray.length; i++) {
             domString += `<div class="human row">`
             domString += `<div class="col-sm-4">`
             domString += `<img src="${humanArray[i].image}">`
             domString += `<p>${humanArray[i].name}</p>`
             domString += `</div>`
             domString += `<div class="col-sm-8 overflow-row">`
-            for (var j = 0; j < humanArray[i].matches.length; j++) {
+            for (let j = 0; j < humanArray[i].matches.length; j++) {
                 domString += `<div class="animal">`
                 domString += `<img src="${humanArray[i].matches[j].image}">`
                 domString += `<p>${humanArray[i].matches[j].name}</p>`
@@ -40,7 +39,7 @@ $(document).ready(function() {
             domString += `</div>`
         }
         outputContainer.append(domString)
-    }
+    };
 
     Promise.all([loadJSON("./database/humans.json"), loadJSON("./database/dinos.json"), loadJSON("./database/dogs.json"), loadJSON("./database/cats.json")])
         .then(function(data) {
@@ -73,23 +72,24 @@ $(document).ready(function() {
             console.log(error);
         });
 
-    var checkForTypeMatch = function(human, pet) {
-        var interestedInArray = human["interested-in"];
-        var isMatchNumber = interestedInArray.indexOf(pet.type);
+    const checkForTypeMatch = (human, pet) => {
+        let interestedInArray = human["interested-in"];
+        let isMatchNumber = interestedInArray.indexOf(pet.type);
         if (isMatchNumber === -1) {
             return false;
         } else {
             return true;
         }
-    }
+    };
 
-    var checkForKidFriendly = function(human, pet) {
-        var hasKids = human["has-kids"]; //true or false
-        var isKidFriendly = pet["kid-friendly"];
-        var isMatched = true;
+    const checkForKidFriendly = (human, pet) => {
+        let hasKids = human["has-kids"]; //true or false
+        let isKidFriendly = pet["kid-friendly"];
+        let isMatched = true;
         if (hasKids && !isKidFriendly) {
             isMatched = false;
         }
         return isMatched;
-    }
+    };
+
 });
